@@ -3,7 +3,6 @@ This project is part of the Multimedia Systems in the Automotive Industry course
 
 **Features**
 **Camera Calibration**
-
 The program includes functionality to calibrate the camera using chessboard patterns.
 Camera calibration compensates for lens distortion to ensure accurate lane detection.
 The calibration process computes the camera matrix and distortion coefficients based on multiple chessboard images.
