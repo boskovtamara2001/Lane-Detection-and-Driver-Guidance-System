@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import glob
 
-# 1. Define chessboard dimensions
+# 1. Compute the camera calibration matrix and distortion coefficients given a set of chessboard images
+# Define chessboard dimensions
 chessboard_dims = (9, 6)  # Number of inner corners along rows and columns
 square_size = 1.0  # Physical size of one square on the chessboard
 
@@ -36,17 +37,50 @@ success, camera_matrix, distortion_coeffs, rotation_vectors, translation_vectors
 # Load a test image for processing
 test_image = cv2.imread('test_images/whiteCarLaneSwitch.jpg')
 
-# 2. Correct lens distortion
+# 2. Apply a distortion correction to raw images
 corrected_image = cv2.undistort(test_image, camera_matrix, distortion_coeffs, None, camera_matrix)
 
-# Apply color transformations and gradient operations to generate a thresholded binary image
+# 3. Use color transforms, gradients, etc., to create a thresholded binary image
 grayscale_corrected = cv2.cvtColor(corrected_image, cv2.COLOR_BGR2GRAY)
 
 # Apply Canny edge detection
 edges = cv2.Canny(grayscale_corrected, 50, 150)  # Adjust thresholds as needed
 
 # Display the original corrected image and the edges
-cv2.imshow("Corrected Image", corrected_image)
-cv2.imshow("Canny Edges", edges)
+# cv2.imshow("Corrected Image", corrected_image)
+# cv2.imshow("Canny Edges", edges)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# 4. Apply a perspective transform to rectify binary image ("birds-eye view").
+# Define the source points (4 points from the input image)
+src = [
+    [440, 340],  # Top-left
+    [530, 340],  # Top-right
+    [850, 530],  # Bottom-right
+    [190, 530]   # Bottom-left
+]
+
+# Define the destination points for perspective transformation (with a wider perspective)
+line_dst_offset = 150  # Larger offset for wider perspective
+dst = [
+    [src[3][0] + line_dst_offset, 0],                       # Top-left
+    [src[2][0] - line_dst_offset, 0],                       # Top-right
+    [src[2][0] - line_dst_offset, edges.shape[0]],     # Bottom-right
+    [src[3][0] + line_dst_offset, edges.shape[0]]      # Bottom-left
+]
+
+# Convert points to float32 for compatibility with OpenCV functions
+src = np.float32(src)
+dst = np.float32(dst)
+
+# Compute the perspective transformation matrix
+transform_matrix = cv2.getPerspectiveTransform(src, dst)
+
+# Apply the perspective transformation
+img_pt = cv2.warpPerspective(edges, transform_matrix, dsize=(edges.shape[1], edges.shape[0]), flags=cv2.INTER_LINEAR)
+
+# Display the resulting image
+cv2.imshow('Birds-eye Perspective Transform', img_pt)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
