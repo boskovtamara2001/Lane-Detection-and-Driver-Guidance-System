@@ -125,19 +125,57 @@ righty = nonzeroy[right_lane_inds]
 left_fit = np.polyfit(lefty, leftx, 2)
 right_fit = np.polyfit(righty, rightx, 2)
 
-# 6. Draw the lanes on the image
-# Create an output image with the lane boundaries drawn in red and blue
-out_img = np.dstack((img_pt, img_pt, img_pt)) * 255
+# 6. Calculate lane curvature and vehicle position
+# Define conversion factors
+ym_per_pix = 30 / 720  # Meters per pixel in y-dimension
+xm_per_pix = 3.7 / 700  # Meters per pixel in x-dimension
 
-# Draw the left lane in red
-for index in range(len(leftx)):
-    out_img[lefty[index], leftx[index]] = [0, 0, 255]  # Red for left lane
+# Generate y-values
+ploty = np.linspace(0, img_pt.shape[0] - 1, img_pt.shape[0])
 
-# Draw the right lane in blue
-for index in range(len(rightx)):
-    out_img[righty[index], rightx[index]] = [255, 0, 0]  # Blue for right lane
+# Calculate curvature for left and right lanes
+left_curverad = ((1 + (2 * left_fit[0] * np.max(ploty) * ym_per_pix + left_fit[1])**2)**1.5) / np.abs(2 * left_fit[0])
+right_curverad = ((1 + (2 * right_fit[0] * np.max(ploty) * ym_per_pix + right_fit[1])**2)**1.5) / np.abs(2 * right_fit[0])
 
-# Display the result
-cv2.imshow('Detected Lane Boundaries', out_img)
+# Average the curvature
+curvature = (left_curverad + right_curverad) / 2
+
+# Calculate vehicle position with respect to the lane center
+lane_center = (leftx_base + rightx_base) / 2
+image_center = img_pt.shape[1] / 2
+center_offset = (image_center - lane_center) * xm_per_pix
+
+# 9. Warp the detected lane boundaries back onto the original image and annotate it
+lane_image = np.zeros_like(test_image)
+
+# Generate x-values for plotting
+left_fitx = left_fit[0] * ploty**2 + left_fit[1] * ploty + left_fit[2]
+right_fitx = right_fit[0] * ploty**2 + right_fit[1] * ploty + right_fit[2]
+
+# Create lane area
+lane_pts_left = np.array([np.transpose(np.vstack([left_fitx, ploty]))])
+lane_pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx, ploty])))])
+lane_pts = np.hstack((lane_pts_left, lane_pts_right))
+
+cv2.fillPoly(lane_image, np.int_([lane_pts]), (0, 255, 0))
+
+# Compute the inverse perspective transform matrix
+inv_transform_matrix = cv2.getPerspectiveTransform(dst, src)
+
+# Warp the lane image back to the original perspective
+lane_overlay = cv2.warpPerspective(lane_image, inv_transform_matrix, (test_image.shape[1], test_image.shape[0]))
+
+# Combine the overlay with the original image
+annotated_image = cv2.addWeighted(test_image, 1, lane_overlay, 0.5, 0)
+
+# Add curvature and position annotations
+curvature_text = f"Radius of Curvature: {curvature:.2f} m"
+position_text = f"Vehicle is {abs(center_offset):.2f} m {'left' if center_offset < 0 else 'right'} of center"
+
+cv2.putText(annotated_image, curvature_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+cv2.putText(annotated_image, position_text, (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+# Display the final annotated image
+cv2.imshow('Lane Detection', annotated_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
