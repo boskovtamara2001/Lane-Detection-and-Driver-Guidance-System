@@ -1,43 +1,57 @@
-# Lane-Detection-and-Driver-Guidance-System
-This project is part of the Multimedia Systems in the Automotive Industry course. It is a program designed to process video footage and images to detect white lane markings on the road. The program provides visual guidance to the driver by overlaying direction lines on the video, indicating the optimal path to stay within their lane.
+**Lane-Detection-and-Driver-Guidance-SystemProject**
 
-**Features**
-**Camera Calibration**
-The program includes functionality to calibrate the camera using chessboard patterns.
-Camera calibration compensates for lens distortion to ensure accurate lane detection.
-The calibration process computes the camera matrix and distortion coefficients based on multiple chessboard images.
+The goals / steps of this project are the following:
 
-**Lane Detection**
-Processes images and videos to detect lane markings.
-Combines techniques such as edge detection and color thresholding for robust detection of both white and yellow lane markings.
+* Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
+* Apply a distortion correction to raw images.
+* Use color transforms, gradients, etc., to create a thresholded binary image.
+* Apply a perspective transform to rectify binary image ("birds-eye view").
+* Detect lane pixels and fit to find the lane boundary.
+* Determine the curvature of the lane and vehicle position with respect to center.
+* Warp the detected lane boundaries back onto the original image.
+* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-**Driver Guidance**
-Overlays direction lines on the video feed to provide real-time guidance for lane following.
+### Camera Calibration
+To compute the camera matrix, the following steps are necessary:  
+1. Obtain a set of chessboard images taken from different angles (e.g., stored in `/camera_cal`).  
+2. Define the dimensions of the chessboard (number of inner corners along rows and columns).  
+3. Create a 3D matrix representing the chessboard corners in real-world coordinates.  
+4. Convert the images to grayscale to accurately detect edges.  
+5. Detect edges using the function `cv2.findChessboardCorners`.  
+6. Use the function `cv2.calibrateCamera` to calculate the camera matrix, distortion coefficients, rotation, and translation vectors by minimizing the re-projection error between the real-world and image points.
 
-**Camera Calibration Process**
-Input: A set of chessboard images captured by the camera.
+   ![image](https://github.com/user-attachments/assets/696698ac-26ea-41f6-abff-5ed5bbad3c65)
 
-Steps:
-  1. Detect inner corners on the chessboard images using the cv2.findChessboardCorners function.
-  2. Map 2D image points (chessboard corners) to corresponding 3D real-world points.
-  3. Compute the camera matrix and distortion coefficients using cv2.calibrateCamera.
-  4. Undistort sample images to verify the calibration process.
 
-**Prerequisites**
-Python 3.8+
-OpenCV library (cv2)
-NumPy library (numpy)
+#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-**How to Run**
-Install Dependencies:
-pip install opencv-python numpy  
+TODO: Add your text here!!!
 
-**File Structure**
-camera_cal/: Contains calibration images.
-test_images/: Sample road images for testing.
-camera_calibration.py: Script for camera calibration.
-lane_detection.py: Script for detecting lane markings and providing guidance.
+#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-**Future Enhancements**
-Implement real-time lane detection using a live video feed.
-Add support for curved lane detection and predictive path calculations.
+TODO: Add your text here!!!
+
+#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+
+TODO: Add your text here!!!
+
+#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+
+TODO: Add your text here!!!
+
+#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+
+TODO: Add your text here!!!
+
+### Pipeline (video)
+
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+
+TODO: Add your text here!!!
+
+### Discussion
+
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+
+TODO: Add your text here!!!
+
