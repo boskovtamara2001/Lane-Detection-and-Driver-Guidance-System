@@ -110,9 +110,33 @@ These fitted polynomials provide a smooth representation of the lane lines, whic
    ![image](https://github.com/user-attachments/assets/e304ce51-68ff-443f-8b8c-11f93ed0c8ac)
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+Radius of Curvature Calculation: The radius of curvature is an estimate of the curve of the lane in real-world coordinates. To calculate it, I used the **polynomial fit** of the detected lane pixels (which were fit using a second-degree polynomial). The formula for curvature in the context of a parabola (second-degree polynomial) is:
 
-TODO: Add your text here!!!
+   ![image](https://github.com/user-attachments/assets/872c09b6-7f6a-4eee-aea5-e5a04909d902)
 
+```python
+# Calculate the curvature of the left and right lane lines
+left_curverad = ((1 + (2 * left_fit[0] * np.max(ploty) * ym_per_pix + left_fit[1])**2)**1.5) / np.abs(2 * left_fit[0])
+right_curverad = ((1 + (2 * right_fit[0] * np.max(ploty) * ym_per_pix + right_fit[1])**2)**1.5) / np.abs(2 * right_fit[0])
+
+# Average the curvature of the two lanes
+curvature = (left_curverad + right_curverad) / 2
+```
+
+Position of Vehicle with Respect to Center: The position of the vehicle with respect to the center of the lane is calculated based on the horizontal distance between the lane center and the image center. The lane center is estimated as the midpoint between the base positions of the left and right lanes.
+
+The center offset is then calculated by finding the difference between the lane center and the image center, converted to real-world meters using a conversion factor (`xm_per_pix`), which represents the number of meters per pixel in the x-direction.
+
+```python
+# Calculate the lane center (midpoint between left and right lane)
+lane_center = (leftx_base + rightx_base) / 2
+
+# Get the image center (horizontal center of the image)
+image_center = img_pt.shape[1] / 2
+
+# Calculate the offset of the vehicle from the center of the lane
+center_offset = (image_center - lane_center) * xm_per_pix
+```
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
 TODO: Add your text here!!!
