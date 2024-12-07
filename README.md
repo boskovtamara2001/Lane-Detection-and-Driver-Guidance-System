@@ -112,7 +112,7 @@ These fitted polynomials provide a smooth representation of the lane lines, whic
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 Radius of Curvature Calculation: The radius of curvature is an estimate of the curve of the lane in real-world coordinates. To calculate it, I used the **polynomial fit** of the detected lane pixels (which were fit using a second-degree polynomial). The formula for curvature in the context of a parabola (second-degree polynomial) is:
 
-   ![image](https://github.com/user-attachments/assets/872c09b6-7f6a-4eee-aea5-e5a04909d902)
+                                                   ![image](https://github.com/user-attachments/assets/872c09b6-7f6a-4eee-aea5-e5a04909d902)
 
 ```python
 # Calculate the curvature of the left and right lane lines
@@ -139,7 +139,7 @@ center_offset = (image_center - lane_center) * xm_per_pix
 ```
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-TODO: Add your text here!!!
+   ![image](https://github.com/user-attachments/assets/eecba404-5ba7-4be7-991d-a39abae670fe)
 
 ### Pipeline (video)
 
@@ -150,6 +150,6 @@ TODO: Add your text here!!!
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+One of the biggest challenges I faced in this project was adapting the perspective transform for each video individually. The manually defined source and destination points for the perspective warp don't always work well for every video, leading to suboptimal results. This is particularly evident when the road geometry or camera angle varies. For example, in some cases, the lane lines may appear distorted or incorrectly warped, causing difficulties in lane detection.
 
-TODO: Add your text here!!!
-
+To make the pipeline more robust, I could implement an automated method to detect the region of interest for the perspective transform. This would involve dynamically selecting the source points based on the detected lane markings or road features in each frame. Additionally, improving the edge detection and lane fitting algorithms would help to handle variations in road conditions, lighting, and camera angles more effectively.
