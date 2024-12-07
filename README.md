@@ -46,14 +46,16 @@ dst = np.float32([[src[3][0] + line_dst_offset, 0],
 ```
                   
 Transformation Matrix: Using the cv2.getPerspectiveTransform function, I computed the matrix that maps the source points to the destination points.
-python
+```python
 transform_matrix = cv2.getPerspectiveTransform(src, dst)
 inv_transform_matrix = cv2.getPerspectiveTransform(dst, src)
-Warping the Image: With the transformation matrix, I applied the perspective warp using cv2.warpPerspective. This transformed the image into a bird's-eye view of the lane markings, which helps in better lane detection. The transformation is performed in the process_frame function.
+```
+Warping the Image: With the transformation matrix, I applied the perspective warp using cv2.warpPerspective. This transformed the image into a bird's-eye view of the lane markings, which helps in better lane detection.
 
-python
+The transformation is performed in the process_frame function.
+```python
 img_pt = cv2.warpPerspective(edges, transform_matrix, dsize=(edges.shape[1], edges.shape[0]), flags=cv2.INTER_LINEAR)
-The perspective transform is crucial for lane detection because it makes the road appear as if viewed from above, simplifying the analysis of lane boundaries.
+```
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
