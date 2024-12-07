@@ -62,13 +62,12 @@ img_pt = cv2.warpPerspective(edges, transform_matrix, dsize=(edges.shape[1], edg
 Identifying Lane-Line Pixels: After applying the perspective transform to the edge-detected image, I use a histogram to locate the base positions of the left and right lanes. Specifically, I sum the pixel values along the vertical axis (in the lower half of the image) to create a histogram of the pixel intensities. The peaks of the histogram correspond to the base positions of the left and right lane lines. The left lane base is found by identifying the peak in the left half of the histogram, and the right lane base is found in the right half.
 
 In the code, this is done in the following lines:
-
-python
-Копирај кȏд
+```python
 histogram = np.sum(img_pt[img_pt.shape[0] // 2:, :], axis=0)
 midpoint = int(histogram.shape[0] // 2)
 leftx_base = np.argmax(histogram[:midpoint])
 rightx_base = np.argmax(histogram[midpoint:]) + midpoint
+```
 Sliding Windows for Lane Detection: Once the base positions of the lanes are determined, I use a sliding window approach to find the lane pixels in subsequent rows. The image is divided into 9 horizontal windows, and for each window, I search for non-zero pixels (indicating the presence of lane markings) within the region around the previously found lane position. These pixels are then added to a list of lane pixels.
 
 The sliding window algorithm is implemented in the following section:
@@ -107,6 +106,8 @@ left_fit = np.polyfit(lefty, leftx, 2)
 right_fit = np.polyfit(righty, rightx, 2)
 ```
 These fitted polynomials provide a smooth representation of the lane lines, which can then be used to draw the lane boundaries on the image.
+
+   ![image](https://github.com/user-attachments/assets/e304ce51-68ff-443f-8b8c-11f93ed0c8ac)
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
