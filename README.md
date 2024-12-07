@@ -145,7 +145,7 @@ center_offset = (image_center - lane_center) * xm_per_pix
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-TODO: Add your text here!!!
+The output video can be found in the folder `output_video`.
 
 ### Discussion
 
